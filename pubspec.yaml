@@ -1,6 +1,6 @@
 name: mark_scroll_view
 description: A high-performance a-z listview with flexible and efficient use.
-version: 0.0.1
+version: 0.0.2
 homepage: 'https://github.com/Dabbit-Chan/mark_scroll_view'
 
 environment:

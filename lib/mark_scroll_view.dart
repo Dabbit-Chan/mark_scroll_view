@@ -5,9 +5,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
-class MarkScrollModel {
+class MarkScrollModel<T> {
   final String tag;
-  final List<dynamic> children;
+  final List<T> children;
 
   const MarkScrollModel({
     required this.tag,
@@ -35,7 +35,7 @@ class MarkBarOption {
   });
 }
 
-class MarkScrollView extends StatefulWidget {
+class MarkScrollView<T> extends StatefulWidget {
   const MarkScrollView({
     Key? key,
     required this.dataList,
@@ -46,7 +46,7 @@ class MarkScrollView extends StatefulWidget {
     this.markBarOption = const MarkBarOption(),
   }) : super(key: key);
 
-  final List<MarkScrollModel> dataList;
+  final List<MarkScrollModel<T>> dataList;
   final Widget Function(BuildContext context, int index) susBuilder;
   final Widget Function(BuildContext context, int mainIndex, int index) itemBuilder;
   final Widget Function(BuildContext context, int index) markBuilder;
