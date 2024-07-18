@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // 数据
   List<String> dataList = [];
   Map<String, List<String>> showMap = {};
-  List<MarkScrollModel> modelList = [];
+  List<MarkScrollModel<String>> modelList = [];
 
   @override
   void initState() {
@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     showMap.forEach((key, value) {
-      MarkScrollModel model = MarkScrollModel(tag: key, children: value);
+      MarkScrollModel<String> model = MarkScrollModel(tag: key, children: value);
       modelList.add(model);
     });
   }
@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
           widget.title,
         ),
       ),
-      body: MarkScrollView(
+      body: MarkScrollView<String>(
         dataList: modelList,
         susBuilder: (context, index) {
           return Container(
