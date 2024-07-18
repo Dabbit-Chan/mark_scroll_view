@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Mask Scroll View'),
     );
   }
 }
@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
     dataList.clear();
     showMap.clear();
     modelList.clear();
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 50; i++) {
       String value = all[Random().nextInt(all.length - 1)];
       decAdd(value);
     }
@@ -92,9 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: MarkScrollView(
         dataList: modelList,
-        susBuilder: (_, index) {
+        susBuilder: (context, index) {
           return Container(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).primaryColorLight,
             padding: const EdgeInsets.all(12),
             child: Text(
               modelList[index].tag.toUpperCase(),
@@ -102,13 +102,14 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         },
         itemBuilder: (context, mainIndex, index) {
+          String text = modelList[mainIndex].children[index];
+          text = '${text[0].toUpperCase()}${text.substring(1)}';
           return Container(
             height: 60,
             padding: const EdgeInsets.only(left: 12),
             alignment: Alignment.centerLeft,
-            child: Text(
-              modelList[mainIndex].children[index],
-            ),
+            color: Theme.of(context).secondaryHeaderColor,
+            child: Text(text),
           );
         },
         markBuilder: (context, index) {
@@ -116,6 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
             modelList[index].tag.toUpperCase(),
           );
         },
+        markBarOption: const MarkBarOption(
+          defaultColor: Colors.white,
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
