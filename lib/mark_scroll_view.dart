@@ -42,6 +42,7 @@ class MarkScrollView extends StatefulWidget {
     required this.susBuilder,
     required this.itemBuilder,
     required this.markBuilder,
+    this.markBarBuilder,
     this.markBarOption = const MarkBarOption(),
   }) : super(key: key);
 
@@ -49,6 +50,7 @@ class MarkScrollView extends StatefulWidget {
   final Widget Function(BuildContext context, int index) susBuilder;
   final Widget Function(BuildContext context, int mainIndex, int index) itemBuilder;
   final Widget Function(BuildContext context, int index) markBuilder;
+  final Widget Function(BuildContext context)? markBarBuilder;
   final MarkBarOption markBarOption;
 
   @override
@@ -95,7 +97,7 @@ class _MarkScrollViewState extends State<MarkScrollView> {
                 },
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
-                        (context, index) {
+                    (context, index) {
                       if (contextList.length < mainIndex + 1) {
                         contextList.add(context);
                       }
@@ -130,7 +132,9 @@ class _MarkScrollViewState extends State<MarkScrollView> {
                 },
                 onVerticalDragUpdate: (detail) {
                   double dy = detail.localPosition.dy;
-                  int value = dy % ((widget.dataList.length) * itemHeight) ~/ itemHeight;
+                  int value = dy %
+                      ((widget.dataList.length) * itemHeight) ~/
+                      itemHeight;
                   sliverObserverController.jumpTo(
                     sliverContext: contextList[value],
                     index: 0,
@@ -139,26 +143,29 @@ class _MarkScrollViewState extends State<MarkScrollView> {
                     focusIndex.value = value;
                   });
                 },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: List.generate(widget.dataList.length, (index) {
-                    return Container(
-                      decoration: widget.markBarOption.decorationBuilder != null
-                          ? widget.markBarOption.decorationBuilder!(focusIndex.value, index)
-                          : ShapeDecoration(
-                        shape: widget.markBarOption.shape ?? const CircleBorder(),
-                        color: focusIndex.value == index
-                            ? widget.markBarOption.focusColor ?? Theme.of(context).colorScheme.primary.withOpacity(0.5)
-                            : widget.markBarOption.defaultColor ?? Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                child: widget.markBarBuilder != null
+                    ? widget.markBarBuilder!(context)
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(widget.dataList.length, (index) {
+                          return Container(
+                            decoration:
+                                widget.markBarOption.decorationBuilder != null
+                                    ? widget.markBarOption.decorationBuilder!(focusIndex.value, index)
+                                    : ShapeDecoration(
+                                        shape: widget.markBarOption.shape ?? const CircleBorder(),
+                                        color: focusIndex.value == index
+                                            ? widget.markBarOption.focusColor ?? Theme.of(context).colorScheme.primary.withOpacity(0.5)
+                                            : widget.markBarOption.defaultColor ?? Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                                      ),
+                            margin: widget.markBarOption.margin ?? const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+                            width: widget.markBarOption.size?.width ?? 20,
+                            height: widget.markBarOption.size?.height ?? 20,
+                            alignment: Alignment.center,
+                            child: widget.markBuilder(context, index),
+                          );
+                        }),
                       ),
-                      margin: widget.markBarOption.margin ?? const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
-                      width: widget.markBarOption.size?.width ?? 20,
-                      height: widget.markBarOption.size?.height ?? 20,
-                      alignment: Alignment.center,
-                      child: widget.markBuilder(context, index),
-                    );
-                  }),
-                ),
               );
             },
           ),
