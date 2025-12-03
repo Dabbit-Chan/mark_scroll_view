@@ -1,11 +1,10 @@
 name: mark_scroll_view
 description: A high-performance a-z listview with flexible and efficient use.
-version: 0.0.2
+version: 0.0.3
 homepage: 'https://github.com/Dabbit-Chan/mark_scroll_view'
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: ">=1.17.0"
+ sdk: '>=2.17.0'
 
 dependencies:
   flutter:

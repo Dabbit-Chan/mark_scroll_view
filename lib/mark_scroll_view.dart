@@ -44,6 +44,7 @@ class MarkScrollView<T> extends StatefulWidget {
     required this.markBuilder,
     this.markBarBuilder,
     this.markBarOption = const MarkBarOption(),
+    this.enableDragDown = true,
   }) : super(key: key);
 
   final List<MarkScrollModel<T>> dataList;
@@ -52,6 +53,7 @@ class MarkScrollView<T> extends StatefulWidget {
   final Widget Function(BuildContext context, int index) markBuilder;
   final Widget Function(BuildContext context)? markBarBuilder;
   final MarkBarOption markBarOption;
+  final bool enableDragDown;
 
   @override
   State<MarkScrollView> createState() => _MarkScrollViewState();
@@ -119,22 +121,30 @@ class _MarkScrollViewState extends State<MarkScrollView> {
                   (widget.markBarOption.size?.height ?? 20) + (widget.markBarOption.margin?.vertical ?? 10);
               return GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onVerticalDragDown: (detail) {
-                  double dy = detail.localPosition.dy;
-                  int value = dy % ((widget.dataList.length) * itemHeight) ~/ itemHeight;
-                  sliverObserverController.jumpTo(
-                    sliverContext: contextList[value],
-                    index: 0,
-                  );
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                    focusIndex.value = value;
-                  });
-                },
+                onVerticalDragDown: widget.enableDragDown
+                    ? (detail) {
+                      double dy = detail.localPosition.dy;
+                      double maxHeight = (widget.dataList.length) * itemHeight;
+                      if (dy < 0 || dy > maxHeight) {
+                        return;
+                      }
+                      int value = dy % maxHeight ~/ itemHeight;
+                      sliverObserverController.jumpTo(
+                        sliverContext: contextList[value],
+                        index: 0,
+                      );
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        focusIndex.value = value;
+                      });
+                    }
+                    : null,
                 onVerticalDragUpdate: (detail) {
                   double dy = detail.localPosition.dy;
-                  int value = dy %
-                      ((widget.dataList.length) * itemHeight) ~/
-                      itemHeight;
+                  double maxHeight = (widget.dataList.length) * itemHeight;
+                  if (dy < 0 || dy > maxHeight) {
+                    return;
+                  }
+                  int value = dy % maxHeight ~/ itemHeight;
                   sliverObserverController.jumpTo(
                     sliverContext: contextList[value],
                     index: 0,
